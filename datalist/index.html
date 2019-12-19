@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple OpenFin Datalist Tester</title>
+    <style>
+      h1, h2 { font: sans-serif; margin-bottom: 0.25em; }
+    </style>
+  </head>
+  <body>
+    <h1>Just an input with a Datalist</h1>
+    <div>
+      <h2>Pick an Entry</h2>
+      <form onsubmit="return false;">
+        <div>
+          <input type="text" id="title" name="title" list="somelist">
+          <datalist id="somelist">
+            <option value="example">Value Example</option>
+            <option value="another">Value Another</option>
+            <option value="something">Value Something</option>
+          </datalist>
+        </div>
+      </form>
+      <div>Note: attempting to open the auto-completion popup will crash the openfin runtime (as of 14.78.47.19).</div>
+    </div>
+  </body>
+</html>

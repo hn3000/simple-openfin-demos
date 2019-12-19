@@ -1,0 +1,19 @@
+{
+  "name": "simple-openfin-demos",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start:datalist": "openfin -l -c datalist/app.json",
+    "start:notifications": "openfin -l -c notifications/app.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "openfin-notifications": "^0.11.1"
+  },
+  "devDependencies": {
+    "openfin-cli": "^2.0.12",
+    "typescript": "^3.7.3"
+  }
+}

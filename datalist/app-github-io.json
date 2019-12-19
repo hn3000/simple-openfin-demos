@@ -1,0 +1,30 @@
+{
+    "licenseKey": "no, unfortunately we do not have one",
+    "runtime": {
+        "version": "canary",
+        "forceLatest": true
+    },
+    "supportInformation": {
+        "company": "hn3000",
+        "product": "Simple OpenFin Notifications tester",
+        "url": "github.com/hn3000/simple-openfin-demo/"
+    },
+    "startup_app": {
+        "name": "OpenFin Datalist tester (1)",
+        "uuid": "hn3000.openfin.datalist.bug",
+        "url": "http://hn3000.github.io/simple-openfin-demos/datalist",
+        "autoShow": true,
+        "defaultHeight": 500,
+        "defaultWidth": 500,
+        "defaultTop": 25,
+        "defaultLeft": 50
+    },
+    "devtools_port": 9991,
+    "shortcut": {},
+    "services": [
+        {
+            "name": "notifications",
+            "//manifestUrl": "http://localhost:3923/provider/app.json"
+        }
+    ]
+}
