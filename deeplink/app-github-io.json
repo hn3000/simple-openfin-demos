@@ -12,7 +12,7 @@
     "startup_app": {
         "name": "OpenFin Deeplink tester",
         "uuid": "hn3000.openfin.demo.deeplink",
-        "url": "https://github.com/hn3000/simple-openfin-demo/deeplink",
+        "url": "https://hn3000.github.io/simple-openfin-demo/deeplink",
         "autoShow": true,
         "defaultHeight": 500,
         "defaultWidth": 500,
