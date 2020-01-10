@@ -12,7 +12,7 @@
     "startup_app": {
         "name": "OpenFin Datalist tester (1)",
         "uuid": "hn3000.openfin.datalist.bug",
-        "url": "http://hn3000.github.io/simple-openfin-demos/datalist",
+        "url": "https://hn3000.github.io/simple-openfin-demos/datalist/",
         "autoShow": true,
         "defaultHeight": 500,
         "defaultWidth": 500,
