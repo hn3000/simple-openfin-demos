@@ -7,12 +7,12 @@
     "supportInformation": {
         "company": "hn3000",
         "product": "Simple OpenFin deeplink tester",
-        "url": "github.com/hn3000/simple-openfin-demo/deeplink"
+        "url": "github.com/hn3000/simple-openfin-demos/deeplink"
     },
     "startup_app": {
         "name": "OpenFin Deeplink tester",
         "uuid": "hn3000.openfin.demo.deeplink",
-        "url": "https://hn3000.github.io/simple-openfin-demo/deeplink/",
+        "url": "https://hn3000.github.io/simple-openfin-demos/deeplink/",
         "autoShow": true,
         "defaultHeight": 500,
         "defaultWidth": 500,
