@@ -1,7 +1,7 @@
 {
     "licenseKey": "no, unfortunately we do not have one",
     "runtime": {
-        "version": "canary",
+        "version": "beta",
         "forceLatest": true
     },
     "supportInformation": {
