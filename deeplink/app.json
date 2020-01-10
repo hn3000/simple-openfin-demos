@@ -1,0 +1,25 @@
+{
+    "licenseKey": "no, unfortunately we do not have one",
+    "runtime": {
+        "version": "community",
+        "forceLatest": true
+    },
+    "supportInformation": {
+        "company": "hn3000",
+        "product": "Simple OpenFin deeplink tester",
+        "url": "github.com/hn3000/simple-openfin-demo/fins-protocol"
+    },
+    "startup_app": {
+        "name": "OpenFin Deeplink tester",
+        "uuid": "hn3000.openfin.demo.deeplink",
+        "url": "https://github.com/hn3000/simple-openfin-demo/fins-protocol",
+        "autoShow": true,
+        "defaultHeight": 500,
+        "defaultWidth": 500,
+        "defaultTop": 25,
+        "defaultLeft": 50
+    },
+    "devtools_port": 9991,
+    "shortcut": { },
+    "services": [ ]
+}
