@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple OpenFin Notification Tester</title>
+    <style>
+      pre { margin: 0; margin-top: 5px; }
+      .log-warn { background: #dd33; }
+      .log-error { background: #e333; }
+      .log-debug { color: #333c  }
+      h1, h2 { font: sans-serif; margin-bottom: 0.25em; }
+      body > div { width: 55vw; margin: 2em auto; }
+      form input, form select, form textarea {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+    <h1>Simple Notification Tester</h1>
+    <div>
+      <h2>Create Notification</h2>
+      <form onsubmit="return false;">
+        <div>
+          <input type="text" id="title" name="title">
+          <br><small>title</small>
+        </div>
+        <div>
+          <textarea placeholder="some text" id="text" name="text"></textarea>
+          <br><small>text</small>
+        </div>
+        <div>
+          <select id="icon">
+            <option>choose one</option>
+            <option value="https://loremimage.com/64/64">lorem image</option>
+            <option value="https://loremicon.com/poly/64/64">lorem icon poly</option>
+            <option value="https://loremicon.com/rect/64/64">lorem icon rect</option>
+            <option value="https://loremicon.com/grad/64/64">lorem icon grad</option>
+            <option value="https://loremicon.com/ngon/64/64">lorem icon ngon</option>
+          </select>
+          <br><small>icon from ...</small>
+          <br><img id="preview">
+        </div>
+        <div><label><input type="checkbox" id="data-uri">data uri</label></div>
+        <div><textarea id="text" name="text"></textarea></div>
+        <button type="button">Create</button>
+      </form>
+      <div>
+        <pre><code id="nfy-create"></code></pre>
+      </div>
+    </div>
+    <div>
+      <h2>Received Events</h2>
+      <div>
+        <div id="nfy-rcv-status"></div>
+        <pre><code id="nfy-rcv"></code></pre>
+      </div>
+    </div>
+
+    <!--
+    <div>
+      <h2>Console message</h2>
+      <small>in reverse chronological order</small>
+      <div>
+        <pre><code id="console"></code></pre>
+      </div>
+    </div>
+    -->
+    </div>
+    <!-- - ->
+      <script src="../node_modules/openfin-notifications/dist/main-bundle.js"></script>
+    <!-->
+    <script 
+      src="https://cdn.openfin.co/services/openfin/notifications/0.12.1/openfin-notifications.js"
+    ></script>
+    <!-- -->
+
+    <script>
+      function $$(x,c) {
+        const result = document.querySelectorAll(x);
+        if (c) {
+          result.forEach(c);
+        }
+        return result;
+      } 
+      function $1(x) { return document.querySelector(x); }
+
+      let notifications;
+
+      async function init() {
+        if (!notifications) return;
+
+        notifications = await notifications.getAll();
+
+        function handleEvent(ctx) {
+          $1('#nfy-rcv').innerHTML = JSON.stringify(ctx, null, 2);
+        }
+        function receiveRegistered(listener) {
+          $1('#nfy-rcv-status').innerHTML = 'Registered Listener successfully';
+          console.log('notification listener', listener);
+        }
+        function receiveFailed(error) {
+          if (error instanceof Error) {
+            error = error.toString();
+          }
+          const json = JSON.stringify(error, null, 2);
+          $1('#nfy-rcv-status').innerHTML = 'Listener Registration failed<br>'+json;
+          console.log('notification listener error', error);
+        }
+
+      }
+
+      async function initListener() {
+        try {
+          const listener = notifications.addEventListener('notification-action', handleNotification)
+          receiveRegistered(listener);
+        } catch (e) {
+          receiveFailed(e);
+        }
+      }
+
+      function updatePreview(ev) {
+        const url = ev.currentTarget.value;
+        $1('#preview').src = url;
+        fetch(url).then(res => {
+          if (res.status < 300) {
+            console.log('img success', res.url);
+          } else {
+            console.log('img fail', res.url, res.status);
+          }
+        });
+      }
+
+      init().then(initListener),initListener().then(
+        x => { console.log('initListener success', x); },
+        x => { console.log('initListener failure', x); }
+      ).then(() => {
+        $1('#icon').addEventListener('change', updatePreview);
+      });
+
+
+      function showError(e) {
+        $1('#nfy-send').innerHTML = 'Failure: <b>'+JSON.stringify(e, null, 2);
+      }
+      function showSuccess(x) {
+        $1('#nfy-send').innerHTML = 'Success: <b>'+JSON.stringify(x, null, 2);
+      }
+
+      function getId(it) {
+        if (typeof it === 'string') {
+          return it;
+        }
+        const button = it.currentTarget;
+        const id = button.firstChild.textContent.trim();
+        return id;
+      }
+
+      async function sendContext(ev) {
+        try {
+          const id = getId(ev);
+          const context = contextById[id];          
+          const result = await fdc3.broadcast(context)
+          showSuccess(result);
+        } catch (e) {
+          showError(e);
+        }
+      }
+
+      $$('button').forEach(b => b.addEventListener('click', sendContext));
+
+      /*
+      function print(x) {
+        if (typeof x === 'string') {
+          return x;
+        }
+        return JSON.stringify(x, print, 2);
+      }
+
+      function print(x) {
+        if (typeof x === 'string') {
+          return x;
+        } else if (x instanceof Error) {
+          return `Error: ${x.name} ${x.message} at ${x.stack.join(' ')}`;
+        } else {
+          return JSON.stringify(x, null, 2);
+        }
+      }
+
+      function consoleLog(oldLog, level, msg, ...args) {
+        oldLog.apply(console, [msg, ...args]);
+        const now = new Date();
+        const timestamp = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}:${now.getMilliseconds()}`;
+        const html = [
+          `<pre class="log-${level}">${timestamp}`,
+            msg,
+            ...args.map(print),
+          '</pre>'
+        ].join(' ');
+        const con = $1('#console');
+
+        con.innerHTML = html + con.innerHTML;
+      }
+
+      
+      for (let m of "log,error,warn,info,debug".split(',')) {
+        console[m] = consoleLog.bind(null, console[m], m);
+        console[m]('replaced console.'+m);
+      }
+      */
+
+      </script>
+  </body>
+</html>
