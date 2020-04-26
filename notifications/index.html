@@ -12,6 +12,15 @@
       form input, form select, form textarea {
         width: 100%;
       }
+      form input, form select, form button, form textarea {
+        margin-top: 1em;
+      }
+      form input[type=checkbox] {
+        width: auto;
+      }
+      form div small {
+        padding-left: 3px;
+      }
     </style>
 
   </head>
@@ -22,7 +31,7 @@
       <h2>Create Notification</h2>
       <form onsubmit="return false;">
         <div>
-          <input type="text" id="title" name="title">
+          <input type="text" id="title" name="title" value="Example title text">
           <br><small>title</small>
         </div>
         <div>
@@ -30,22 +39,29 @@
           <br><small>category</small>
         </div>
         <div>
-          <textarea placeholder="some text" id="text" name="text"></textarea>
+          <textarea placeholder="some text" id="text" name="text">Interesting and informative 
+some very long text that can be used to try out notifications.
+          </textarea>
           <br><small>text</small>
         </div>
         <div>
           <select id="icon">
-            <option>choose one</option>
-            <option value="https://loremicon.com/poly/64/64">lorem icon poly</option>
-            <option value="https://loremicon.com/rect/64/64">lorem icon rect</option>
-            <option value="https://loremicon.com/grad/64/64">lorem icon grad</option>
-            <option value="https://loremicon.com/ngon/64/64">lorem icon ngon</option>
-            <option value="https://loremimage.com/64/64">lorem image</option>
+            <option value="https://loremicon.com/poly/64/64">lorem icon poly 64</option>
+            <option value="https://loremicon.com/rect/64/64">lorem icon rect 64</option>
+            <option value="https://loremicon.com/grad/64/64">lorem icon grad 64</option>
+            <option value="https://loremicon.com/ngon/64/64">lorem icon ngon 64</option>
+            <option value="https://loremicon.com/poly/256/256">lorem icon poly 256</option>
+            <option value="https://loremicon.com/rect/256/256">lorem icon rect 256</option>
+            <option value="https://loremicon.com/grad/256/256">lorem icon grad 256</option>
+            <option value="https://loremicon.com/ngon/256/256">lorem icon ngon 256</option>
+            <option value="https://loremimage.com/64/64">lorem image 64</option>
+            <option value="https://loremimage.com/256/256">lorem image 256</option>
           </select>
           <br><small>icon from ...</small>
           <br><img id="preview">
         </div>
         <div><label><input type="checkbox" id="data-uri">data uri</label></div>
+        <div><label><input type="checkbox" id="show-buttons">show-buttons</label></div>
 
         <button type="button">Create</button>
       </form>
@@ -168,6 +184,8 @@
         x => { console.log('initListener failure', x); }
       ).then(() => {
         $1('#icon').addEventListener('change', updatePreview);
+        updatePreview();
+
         $1('button').addEventListener('click', createNotification);
 
         async function createNotification(ev) {
@@ -176,18 +194,18 @@
           const body = $1('#text').value;
           const icon = $1('#preview').currentSrc;
           const useDataUri = $1('#data-uri').checked;
+          const showButtons = $1('#show-buttons').checked;
           let iconUri = icon;
           if (useDataUri) {
             iconUri = await toDataUri(icon);
           }
 
           
-          const buttons = [
+          const buttons = showButtons ? [
             { title: 'Button A', action: { a: 'a' } },
             { title: 'Button B', action: { a: 'b' } }
-          ];
+          ] : undefined;
           
-
           notifications.create({
             title,
             category,
