@@ -125,16 +125,16 @@
       } 
       function $1(x) { return document.querySelector(x); }
 
-      let ofnfy;
       let oflistener;
+      let allNotifications;
 
       async function init() {
         if (!notifications) return;
 
-        ofnfy = await notifications.getAll();
+        allNotifications = await notifications.getAll();
 
         try {
-          const listener = ofnfy.addEventListener('notification-action', handleNotification)
+          const listener = notifications.addEventListener('notification-action', handleNotification)
           receiveRegistered(listener);
         } catch (e) {
           receiveFailed(e);
@@ -161,13 +161,6 @@
       function updatePreview(ev) {
         const url = ev.currentTarget.value;
         $1('#preview').src = url;
-        fetch(url).then(res => {
-          if (res.status < 300) {
-            console.log('img success', res.url);
-          } else {
-            console.log('img fail', res.url, res.status);
-          }
-        });
       }
 
       init().then(
@@ -181,7 +174,7 @@
           const title = $1('#title').value;
           const category = $1('#category').value;
           const body = $1('#text').value;
-          const icon = $1('#icon').value;
+          const icon = $1('#preview').currentSrc;
           const useDataUri = $1('#data-uri').checked;
           let iconUri = icon;
           if (useDataUri) {
@@ -195,7 +188,7 @@
           ];
           
 
-          ofnfy.create({
+          notifications.create({
             title,
             category,
             body,
