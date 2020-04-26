@@ -13,6 +13,7 @@
         width: 100%;
       }
     </style>
+
   </head>
   <body>
     <div>
@@ -25,23 +26,27 @@
           <br><small>title</small>
         </div>
         <div>
+          <input type="text" id="category" name="category" value="Notification Tests">
+          <br><small>category</small>
+        </div>
+        <div>
           <textarea placeholder="some text" id="text" name="text"></textarea>
           <br><small>text</small>
         </div>
         <div>
           <select id="icon">
             <option>choose one</option>
-            <option value="https://loremimage.com/64/64">lorem image</option>
             <option value="https://loremicon.com/poly/64/64">lorem icon poly</option>
             <option value="https://loremicon.com/rect/64/64">lorem icon rect</option>
             <option value="https://loremicon.com/grad/64/64">lorem icon grad</option>
             <option value="https://loremicon.com/ngon/64/64">lorem icon ngon</option>
+            <option value="https://loremimage.com/64/64">lorem image</option>
           </select>
           <br><small>icon from ...</small>
           <br><img id="preview">
         </div>
         <div><label><input type="checkbox" id="data-uri">data uri</label></div>
-        <div><textarea id="text" name="text"></textarea></div>
+
         <button type="button">Create</button>
       </form>
       <div>
@@ -56,7 +61,6 @@
       </div>
     </div>
 
-    <!--
     <div>
       <h2>Console message</h2>
       <small>in reverse chronological order</small>
@@ -64,110 +68,9 @@
         <pre><code id="console"></code></pre>
       </div>
     </div>
-    -->
     </div>
-    <!-- - ->
-      <script src="../node_modules/openfin-notifications/dist/main-bundle.js"></script>
-    <!-->
-    <script 
-      src="https://cdn.openfin.co/services/openfin/notifications/0.12.1/openfin-notifications.js"
-    ></script>
-    <!-- -->
-
     <script>
-      function $$(x,c) {
-        const result = document.querySelectorAll(x);
-        if (c) {
-          result.forEach(c);
-        }
-        return result;
-      } 
-      function $1(x) { return document.querySelector(x); }
-
-      let notifications;
-
-      async function init() {
-        if (!notifications) return;
-
-        notifications = await notifications.getAll();
-
-        function handleEvent(ctx) {
-          $1('#nfy-rcv').innerHTML = JSON.stringify(ctx, null, 2);
-        }
-        function receiveRegistered(listener) {
-          $1('#nfy-rcv-status').innerHTML = 'Registered Listener successfully';
-          console.log('notification listener', listener);
-        }
-        function receiveFailed(error) {
-          if (error instanceof Error) {
-            error = error.toString();
-          }
-          const json = JSON.stringify(error, null, 2);
-          $1('#nfy-rcv-status').innerHTML = 'Listener Registration failed<br>'+json;
-          console.log('notification listener error', error);
-        }
-
-      }
-
-      async function initListener() {
-        try {
-          const listener = notifications.addEventListener('notification-action', handleNotification)
-          receiveRegistered(listener);
-        } catch (e) {
-          receiveFailed(e);
-        }
-      }
-
-      function updatePreview(ev) {
-        const url = ev.currentTarget.value;
-        $1('#preview').src = url;
-        fetch(url).then(res => {
-          if (res.status < 300) {
-            console.log('img success', res.url);
-          } else {
-            console.log('img fail', res.url, res.status);
-          }
-        });
-      }
-
-      init().then(initListener),initListener().then(
-        x => { console.log('initListener success', x); },
-        x => { console.log('initListener failure', x); }
-      ).then(() => {
-        $1('#icon').addEventListener('change', updatePreview);
-      });
-
-
-      function showError(e) {
-        $1('#nfy-send').innerHTML = 'Failure: <b>'+JSON.stringify(e, null, 2);
-      }
-      function showSuccess(x) {
-        $1('#nfy-send').innerHTML = 'Success: <b>'+JSON.stringify(x, null, 2);
-      }
-
-      function getId(it) {
-        if (typeof it === 'string') {
-          return it;
-        }
-        const button = it.currentTarget;
-        const id = button.firstChild.textContent.trim();
-        return id;
-      }
-
-      async function sendContext(ev) {
-        try {
-          const id = getId(ev);
-          const context = contextById[id];          
-          const result = await fdc3.broadcast(context)
-          showSuccess(result);
-        } catch (e) {
-          showError(e);
-        }
-      }
-
-      $$('button').forEach(b => b.addEventListener('click', sendContext));
-
-      /*
+      // debugging help: show console in html
       function print(x) {
         if (typeof x === 'string') {
           return x;
@@ -199,13 +102,136 @@
 
         con.innerHTML = html + con.innerHTML;
       }
-
-      
       for (let m of "log,error,warn,info,debug".split(',')) {
         console[m] = consoleLog.bind(null, console[m], m);
         console[m]('replaced console.'+m);
       }
-      */
+    </script>
+    <!-- - ->
+      <script src="../node_modules/openfin-notifications/dist/main-bundle.js"></script>
+    <!-->
+    <script 
+      src="https://cdn.openfin.co/services/openfin/notifications/0.12.1/openfin-notifications.js"
+    ></script>
+    <!-- -->
+
+    <script>
+      function $$(x,c) {
+        const result = document.querySelectorAll(x);
+        if (c) {
+          result.forEach(c);
+        }
+        return result;
+      } 
+      function $1(x) { return document.querySelector(x); }
+
+      let ofnfy;
+      let oflistener;
+
+      async function init() {
+        if (!notifications) return;
+
+        ofnfy = await notifications.getAll();
+
+        try {
+          const listener = ofnfy.addEventListener('notification-action', handleNotification)
+          receiveRegistered(listener);
+        } catch (e) {
+          receiveFailed(e);
+        }
+
+        function handleNotification(ctx) {
+          $1('#nfy-rcv').innerHTML = JSON.stringify(ctx, null, 2);
+        }
+        function receiveRegistered(listener) {
+          $1('#nfy-rcv-status').innerHTML = 'Registered Listener successfully';
+          console.log('notification listener', listener);
+          oflistener = listener;
+        }
+        function receiveFailed(error) {
+          if (error instanceof Error) {
+            error = error.toString();
+          }
+          const json = JSON.stringify(error, null, 2);
+          $1('#nfy-rcv-status').innerHTML = 'Listener Registration failed<br>'+json;
+          console.log('notification listener error', error);
+        }
+      }
+
+      function updatePreview(ev) {
+        const url = ev.currentTarget.value;
+        $1('#preview').src = url;
+        fetch(url).then(res => {
+          if (res.status < 300) {
+            console.log('img success', res.url);
+          } else {
+            console.log('img fail', res.url, res.status);
+          }
+        });
+      }
+
+      init().then(
+        x => { console.log('initListener success', x); },
+        x => { console.log('initListener failure', x); }
+      ).then(() => {
+        $1('#icon').addEventListener('change', updatePreview);
+        $1('button').addEventListener('click', createNotification);
+
+        async function createNotification(ev) {
+          const title = $1('#title').value;
+          const category = $1('#category').value;
+          const body = $1('#text').value;
+          const icon = $1('#icon').value;
+          const useDataUri = $1('#data-uri').checked;
+          let iconUri = icon;
+          if (useDataUri) {
+            iconUri = await toDataUri(icon);
+          }
+
+          
+          const buttons = [
+            { title: 'Button A', action: { a: 'a' } },
+            { title: 'Button B', action: { a: 'b' } }
+          ];
+          
+
+          ofnfy.create({
+            title,
+            category,
+            body,
+            icon,
+            buttons
+          });
+        }
+      });
+
+
+      function showError(e) {
+        $1('#nfy-send').innerHTML = 'Failure: <b>'+JSON.stringify(e, null, 2);
+      }
+      function showSuccess(x) {
+        $1('#nfy-send').innerHTML = 'Success: <b>'+JSON.stringify(x, null, 2);
+      }
+
+      function createDataUrl(icon) /*: Promise<string>*/ {
+        const result = new Promise((resolve, _reject) => {
+          let image = new Image();
+          image.addEventListener('load', () => {
+            let canvas = document.createElement('canvas');
+            canvas.width = image.naturalWidth;
+            canvas.height = image.naturalHeight;
+            canvas.getContext('2d').drawImage(image, 0, 0);
+            resolve (canvas.toDataURL('image/png'));
+          });
+          setTimeout(() => {resolve(icon)}, 2000);
+          image.src = icon;
+        });
+
+        return result;
+      }
+
+
+      
 
       </script>
   </body>
