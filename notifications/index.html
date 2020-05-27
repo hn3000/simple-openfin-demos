@@ -46,16 +46,16 @@ some very long text that can be used to try out notifications.
         </div>
         <div>
           <select id="icon">
+            <option value="http://loremicon.com/poly/64/64">lorem icon poly 64 (http)</option>
+            <option value="http://loremicon.com/rect/64/64">lorem icon rect 64 (http)</option>
+            <option value="http://loremicon.com/grad/64/64">lorem icon grad 64 (http)</option>
+            <option value="http://loremicon.com/ngon/64/64">lorem icon ngon 64 (http)</option>
+            <option value="https://loremimage.com/64/64">lorem image 64</option>
             <option value="https://loremicon.com/poly/64/64">lorem icon poly 64</option>
             <option value="https://loremicon.com/rect/64/64">lorem icon rect 64</option>
             <option value="https://loremicon.com/grad/64/64">lorem icon grad 64</option>
             <option value="https://loremicon.com/ngon/64/64">lorem icon ngon 64</option>
-            <option value="https://loremicon.com/poly/256/256">lorem icon poly 256</option>
-            <option value="https://loremicon.com/rect/256/256">lorem icon rect 256</option>
-            <option value="https://loremicon.com/grad/256/256">lorem icon grad 256</option>
-            <option value="https://loremicon.com/ngon/256/256">lorem icon ngon 256</option>
             <option value="https://loremimage.com/64/64">lorem image 64</option>
-            <option value="https://loremimage.com/256/256">lorem image 256</option>
           </select>
           <br><small>icon from ...</small>
           <br><img id="preview">
@@ -85,6 +85,16 @@ some very long text that can be used to try out notifications.
       </div>
     </div>
     </div>
+    <script>
+      function $$(x,c) {
+        const result = document.querySelectorAll(x);
+        if (c) {
+          result.forEach(c);
+        }
+        return result;
+      }
+      function $1(x) { return document.querySelector(x); }
+    </script>
     <script>
       // debugging help: show console in html
       function print(x) {
@@ -132,15 +142,6 @@ some very long text that can be used to try out notifications.
     <!-- -->
 
     <script>
-      function $$(x,c) {
-        const result = document.querySelectorAll(x);
-        if (c) {
-          result.forEach(c);
-        }
-        return result;
-      } 
-      function $1(x) { return document.querySelector(x); }
-
       let oflistener;
       let allNotifications;
 
@@ -174,8 +175,8 @@ some very long text that can be used to try out notifications.
         }
       }
 
-      function updatePreview(ev) {
-        const url = ev.currentTarget.value;
+      function updatePreview() {
+        const url = $1('#icon').value;
         $1('#preview').src = url;
       }
 
@@ -184,7 +185,7 @@ some very long text that can be used to try out notifications.
         x => { console.log('initListener failure', x); }
       ).then(() => {
         $1('#icon').addEventListener('change', updatePreview);
-        updatePreview();
+        setTimeout(updatePreview, 20);
 
         $1('button').addEventListener('click', createNotification);
 
@@ -224,7 +225,7 @@ some very long text that can be used to try out notifications.
         $1('#nfy-send').innerHTML = 'Success: <b>'+JSON.stringify(x, null, 2);
       }
 
-      function createDataUrl(icon) /*: Promise<string>*/ {
+      function toDataUri(icon) /*: Promise<string>*/ {
         const result = new Promise((resolve, _reject) => {
           let image = new Image();
           image.addEventListener('load', () => {

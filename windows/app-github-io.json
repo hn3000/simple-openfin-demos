@@ -1,0 +1,25 @@
+{
+    "licenseKey": "no, unfortunately we do not have one",
+    "runtime": {
+        "version": "community",
+        "forceLatest": true
+    },
+    "supportInformation": {
+        "company": "hn3000",
+        "product": "Simple OpenFin broken-manifest test",
+        "url": "github.com/hn3000/simple-openfin-demos/four-oh-four"
+    },
+    "startup_app": {
+        "name": "OpenFin broken-manifest test",
+        "uuid": "hn3000.openfin.demo.four-oh-four",
+        "url": "https://hn3000.github.io/simple-openfin-demos/four-oh-four/not-there.html",
+        "autoShow": false,
+        "defaultHeight": 500,
+        "defaultWidth": 500,
+        "defaultTop": 25,
+        "defaultLeft": 50
+    },
+    "devtools_port": 9991,
+    "shortcut": { },
+    "services": [ { "name": "fdc3" } ]
+}
