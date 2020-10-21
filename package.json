@@ -10,10 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "openfin-notifications": "^0.11.1"
+    "openfin-notifications": "^0.12.0"
   },
   "devDependencies": {
-    "openfin-cli": "^2.0.12",
-    "typescript": "^3.7.3"
+    "openfin-cli": "^3.0.2",
+    "typescript": "^4.0.3"
   }
 }
