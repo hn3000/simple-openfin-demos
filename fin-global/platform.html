@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple OpenFin 'fin' global Checker -- Normally invisible Platform Provider window</title>
+    <style>
+      pre { margin: 0; margin-top: 5px; }
+      .log-warn { background: #dd33; }
+      .log-error { background: #e333; }
+      .log-debug { color: #333c  }
+      h1, h2, h3 { font: sans-serif; margin-bottom: 0.25em; }
+    </style>
+  </head>
+  <body>
+    <h1>Simple OpenFin 'fin' global Checker</h1>
+    <div>Normally invisible Platform Provider window</div>
+    <div>Launch fin Checker <button id="launch-window">as Window</button> <button id="launch-view">as View</button></div>
+    <h2>Checking the fin Global</h2>
+    <div>
+      <h3>At initial load</h3>
+      <div>
+        <pre><code id="initial"></code></pre>
+      </div>
+    </div>
+    <div>
+      <h3>After the DOMContentLoaded event</h3>
+      <div>
+        <pre><code id="dom-loaded"></code></pre>
+      </div>
+    </div>
+    <div>
+      <h3>After the load event</h3>
+      <div>
+        <pre><code id="loaded"></code></pre>
+      </div>
+    </div>
+
+    <div>
+      <h2>Console messages</h2>
+      <small>in reverse chronological order</small>
+      <div>
+        <pre><code id="console"></code></pre>
+      </div>
+    </div>
+
+    <script>
+
+      function print(x) {
+        if (typeof x === 'string') {
+          return x;
+        }
+        return JSON.stringify(x, print, 2);
+      }
+
+      function print(x) {
+        if (typeof x === 'string') {
+          return x;
+        } else if (x instanceof Error) {
+          return `Error: ${x.name} ${x.message} at ${x.stack.join(' ')}`;
+        } else {
+          return JSON.stringify(x, null, 2);
+        }
+      }
+
+      function consoleLog(oldLog, level, msg, ...args) {
+        oldLog.apply(console, [msg, ...args]);
+        const now = new Date();
+        const timestamp = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}:${now.getMilliseconds()}`;
+        const html = [
+          `<pre class="log-${level}">${timestamp}`,
+            msg,
+            ...args.map(print),
+          '</pre>'
+        ].join(' ');
+        const con = document.querySelector('#console');
+
+        con.innerHTML = html + con.innerHTML;
+      }
+
+      
+      for (let m of "log,error,warn,info,debug".split(',')) {
+        console[m] = consoleLog.bind(null, console[m], m);
+        console[m]('replaced console.'+m);
+      }
+
+    </script>
+    <script>
+      var start = Date.now();
+      function finChecker(name) {
+        return function () {
+          var finType = typeof fin;
+          document.querySelector('#'+name).innerHTML = 'fin is '+finType+' @'+(Date.now()-start)+'ms';
+        }
+      }
+
+      finChecker('initial')();
+      window.addEventListener('DOMContentLoaded', finChecker('dom-loaded'));
+      window.addEventListener('load', finChecker('loaded'));
+    </script>
+    <script>
+      async function initPlatform() {
+        await fin.Platform.init();
+      }
+      window.addEventListener('DOMContentLoaded', initPlatform);
+
+    </script>
+    <script>
+
+      let windowCount = 0;
+      let viewCount = 0;
+
+      async function launchWindow() {
+        let window = await fin.Window.create({
+          frame: true,
+          name: 'finCheckerWindow-'+(++windowCount),
+          url: './index.html',
+          defaultWidth: 640,
+          defaultHeight: 800,
+          defaultTop: 50,
+          defaultLeft: 530,
+          saveWindowState: false,
+          resizable: true,
+          waitForPageLoad: false,
+          autoShow: true,
+          shadow: true,
+        });
+
+        console.log('created window ', window);
+      }
+
+      async function launchView() {
+        const platform = await fin.Platform.getCurrent();
+
+        let window = await platform.createWindow({
+          frame: false,
+          name: 'finCheckerWindow-'+(++windowCount),
+          defaultWidth: 640,
+          defaultHeight: 800,
+          defaultTop: 50,
+          defaultLeft: 530,
+          saveWindowState: false,
+          resizable: true,
+          waitForPageLoad: true,
+          autoShow: true,
+          shadow: true,
+        });
+        console.log('created platform window ', window);
+
+        try {
+          const viewOptions = {
+            url: './index.html',
+            name: 'finCheckerView-'+(++viewCount),
+          };
+
+          let retries = 5;
+
+          do {
+            await resolveAfter(500);
+
+            const view = platform.createView(viewOptions, window);
+
+            console.log('created platform view ', view);
+          } while (retries-- >= 0);
+        } catch (xx) {
+          console.warn('caught exception creating view', xx);
+        }
+      }
+
+      document.querySelector('button#launch-window').addEventListener('click', launchWindow);
+      document.querySelector('button#launch-view').addEventListener('click', launchView);
+
+      launchWindow();
+
+      function resolveAfter(timeoutMillis, value) {
+        var resolve, reject;
+        var timeoutP = new Promise(function (res, rej) {
+            resolve = res;
+            reject = rej;
+        });
+        setTimeout(function() { resolve(value) }, timeoutMillis);
+        return timeoutP;
+      }
+    </script>
+  </body>
+</html>

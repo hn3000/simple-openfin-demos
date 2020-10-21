@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .window__titlebar a {
+        text-decoration: none;
+      }
+    </style>
+    <link rel="stylesheet" href="window.css">
+  </head>
+  <body class="window">
+    <div id="window-titlebar" class="window__titlebar"><a id="close-window">[X]</a></div>
+    <div id="layout-container" class="window__content"></div>
+    <div id="window-statusbar" class="window__statusbar"></div>
+    <script>
+      // Layout.init must be called in the custom window to initialize the Layout and 
+      // load the views.  Call init on DOMContentLoaded or after the window is setup 
+      // and the target div element has been created
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('#close-window').addEventListener('click', function() {
+          const finwin = fin.Window.getCurrentSync();
+          finwin.close();
+        });
+        fin.Platform.Layout.init({containerId: 'layout-container'});
+      });
+    </script>
+  </body>
+</html>

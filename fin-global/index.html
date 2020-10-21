@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple OpenFin 'fin' global Checker</title>
+    <style>
+      pre { margin: 0; margin-top: 5px; }
+      .log-warn { background: #dd33; }
+      .log-error { background: #e333; }
+      .log-debug { color: #333c  }
+      h1, h2 { font: sans-serif; margin-bottom: 0.25em; }
+    </style>
+  </head>
+  <body>
+    <h1>Checking the fin Global</h1>
+    <div>
+      <h2>At initial load</h2>
+      <div>
+        <pre><code id="initial"></code></pre>
+      </div>
+    </div>
+    <div>
+      <h2>After the DOMContentLoaded event</h2>
+      <div>
+        <pre><code id="dom-loaded"></code></pre>
+      </div>
+    </div>
+    <div>
+      <h2>After the load event</h2>
+      <div>
+        <pre><code id="loaded"></code></pre>
+      </div>
+    </div>
+
+    <div>
+      <h2>Console messages</h2>
+      <small>in reverse chronological order</small>
+      <div>
+        <pre><code id="console"></code></pre>
+      </div>
+    </div>
+
+
+
+    <script>
+
+      function print(x) {
+        if (typeof x === 'string') {
+          return x;
+        }
+        return JSON.stringify(x, print, 2);
+      }
+
+      function print(x) {
+        if (typeof x === 'string') {
+          return x;
+        } else if (x instanceof Error) {
+          return `Error: ${x.name} ${x.message} at ${x.stack.join(' ')}`;
+        } else {
+          return JSON.stringify(x, null, 2);
+        }
+      }
+
+      function consoleLog(oldLog, level, msg, ...args) {
+        oldLog.apply(console, [msg, ...args]);
+        const now = new Date();
+        const timestamp = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}:${now.getMilliseconds()}`;
+        const html = [
+          `<pre class="log-${level}">${timestamp}`,
+            msg,
+            ...args.map(print),
+          '</pre>'
+        ].join(' ');
+        const con = document.querySelector('#console');
+
+        con.innerHTML = html + con.innerHTML;
+      }
+
+      
+      for (let m of "log,error,warn,info,debug".split(',')) {
+        console[m] = consoleLog.bind(null, console[m], m);
+        console[m]('replaced console.'+m);
+      }
+
+      </script>
+      <script>
+        var start = Date.now();
+        function finChecker(name) {
+          return function () {
+            var finType = typeof fin;
+            document.querySelector('#'+name).innerHTML = 'fin is '+finType+' @'+(Date.now()-start)+'ms';
+          }
+        }
+
+        finChecker('initial')();
+        window.addEventListener('DOMContentLoaded', finChecker('dom-loaded'));
+        window.addEventListener('load', finChecker('loaded'));
+      </script>
+  </body>
+</html>

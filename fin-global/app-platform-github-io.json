@@ -1,0 +1,52 @@
+{
+    "licenseKey": "no, unfortunately we do not have one",
+    "runtime": {
+        "version": "17.85.53.10"
+    },
+    "supportInformation": {
+        "company": "hn3000",
+        "product": "Simple OpenFin fin global test",
+        "url": "github.com/hn3000/simple-openfin-demos/fin-global"
+    },
+    "platform": {
+        "uuid": "hn3000_fin_global_checker_DEV",
+        "applicationIcon": "https://hn3000.github.io/simple-openfin-demos/fin-global/icon.ico",
+        "providerUrl": "https://hn3000.github.io/simple-openfin-demos/fin-global/platform.html",
+        "autoShow": true,
+        "saveWindowState": false,
+        "permissions": {
+            "ExternalWindow": {
+              	"wrap": true
+            },
+            "System": {
+                "getAllExternalWindows": false,
+                "launchExternalProcess": false,
+                "readRegistryValue": false,
+                "terminateExternalProcess": false
+            }
+        },
+        "defaultWindowOptions": {
+            "url": "https://hn3000.github.io/simple-openfin-demos/fin-global/window.html",
+            "contextMenu": true,
+            "defaultWidth": 1200,
+            "defaultHeight": 800,
+            "defaultLeft": 0,
+            "defaultTop": 0,
+            "saveWindowState": false,
+            "backgroundThrottling": true,
+            "shadow": true
+        },
+        "commands": [
+            {
+                "command": "stack.nextTab",
+                "keys": "Ctrl+Tab"
+            }
+        ]
+    },
+    "snapshot": {
+        "windows": []
+    },
+    "devtools_port": 9991,
+    "shortcut": { },
+    "services": [ ]
+}

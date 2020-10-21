@@ -1,0 +1,24 @@
+{
+    "licenseKey": "no, unfortunately we do not have one",
+    "runtime": {
+        "version": "17.85.53.10"
+    },
+    "supportInformation": {
+        "company": "hn3000",
+        "product": "Simple OpenFin fin global test",
+        "url": "github.com/hn3000/simple-openfin-demos/fin-global"
+    },
+    "startup_app": {
+        "name": "Simple OpenFin fin global test",
+        "uuid": "hn3000.openfin.demo.fin-global.local",
+        "url": "http://play.local/simple-openfin-demos/fin-global/",
+        "autoShow": true,
+        "defaultHeight": 500,
+        "defaultWidth": 500,
+        "defaultTop": 25,
+        "defaultLeft": 50
+    },
+    "devtools_port": 9991,
+    "shortcut": { },
+    "services": [ ]
+}
